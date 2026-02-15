@@ -141,17 +141,3 @@ python manage.py runserver
 http://127.0.0.1:8000/
 ```
 
----
-
-## 📸 Screenshots
-
-<p align="center">
-  <img src="repository_Pics/home_page.jpeg" width="180" />&nbsp;
-  <img src="repository_Pics/login_page.jpeg" width="180" />&nbsp;
-  <img src="repository_Pics/sign_up_page.jpeg" width="180" />&nbsp;
-  <img src="repository_Pics/verification.jpeg" width="180" />
-  <img src="repository_Pics/chatbot.jpeg" width="180" />&nbsp;
-  
-</p>
-
----
