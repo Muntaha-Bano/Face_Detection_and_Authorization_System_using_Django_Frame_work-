@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Chatbot</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .chat-container {
+            width: 100%;
+            max-width: 800px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .chat-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 25px 30px;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            justify-content: space-between;
+        }
+
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logout-btn {
+            background: #2196f3;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(33, 150, 243, 0.4);
+        }
+
+        .logout-btn:hover {
+            background: #1976d2;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(33, 150, 243, 0.6);
+        }
+
+        .logout-btn:active {
+            transform: translateY(0);
+        }
+
+        .chat-header h2 {
+            font-size: 24px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .bot-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .chat-box {
+            height: 500px;
+            overflow-y: auto;
+            padding: 30px;
+            background: linear-gradient(to bottom, #f8f9ff 0%, #ffffff 100%);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .chat-box::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .chat-box::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        .chat-box::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+        }
+
+        .message {
+            display: flex;
+            gap: 12px;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .user-message {
+            flex-direction: row-reverse;
+        }
+
+        .message-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .user-message .message-avatar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .bot-message .message-avatar {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+
+        .message-content {
+            max-width: 70%;
+            padding: 15px 20px;
+            border-radius: 18px;
+            line-height: 1.5;
+            word-wrap: break-word;
+        }
+
+        .user-message .message-content {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+
+        .bot-message .message-content {
+            background: white;
+            color: #333;
+            border: 1px solid #e0e0e0;
+            border-bottom-left-radius: 4px;
+        }
+
+        .message-label {
+            font-weight: 600;
+            font-size: 12px;
+            margin-bottom: 5px;
+            opacity: 0.8;
+        }
+
+        .chat-input-container {
+            padding: 25px 30px;
+            background: white;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        form {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 16px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 25px;
+            font-size: 15px;
+            outline: none;
+            transition: all 0.3s ease;
+            background: #f8f9ff;
+        }
+
+        input[type="text"]:focus {
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        }
+
+        button {
+            padding: 16px 32px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .clear-chat-btn {
+            background: #ff9800;
+            box-shadow: 0 4px 15px rgba(255, 152, 0, 0.4);
+        }
+
+        .clear-chat-btn:hover {
+            background: #f57c00;
+            box-shadow: 0 6px 20px rgba(255, 152, 0, 0.6);
+        }
+
+        .empty-state {
+            text-align: center;
+            color: #333;
+            padding: 60px 20px;
+            font-size: 16px;
+        }
+
+        .empty-state-greeting {
+            font-size: 18px;
+            color: #1a1a1a;
+            font-weight: 500;
+        }
+
+        .empty-state-greeting strong {
+            color: #667eea;
+            font-weight: 700;
+        }
+
+        @media (max-width: 768px) {
+            .chat-container {
+                border-radius: 0;
+                height: 100vh;
+            }
+
+            .chat-box {
+                height: calc(100vh - 200px);
+            }
+
+            .message-content {
+                max-width: 85%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="chat-container">
+    <div class="chat-header">
+        <div class="header-title">
+            <div class="bot-icon">🤖</div>
+            <h2>AI Chatbot</h2>
+        </div>
+        <div style="display: flex; gap: 10px;">
+            <button class="clear-chat-btn" onclick="clearChat()">Clear Chat</button>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+    </div>
+
+    <div class="chat-box" id="chatBox">
+        {% if chats %}
+            {% for chat in chats %}
+                <div class="message user-message">
+                    <div class="message-avatar">👤</div>
+                    <div class="message-content">
+                        <div class="message-label">You</div>
+                        {{ chat.user }}
+                    </div>
+                </div>
+                <div class="message bot-message">
+                    <div class="message-avatar">🤖</div>
+                    <div class="message-content">
+                        <div class="message-label">Bot</div>
+                        {{ chat.bot }}
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty-state">
+                <div class="empty-state-icon">💬</div>
+                <p class="empty-state-greeting">Hello <strong>{{ user_name }}</strong>, what can I help you today? </p>
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="chat-input-container">
+        <form method="POST">
+            {% csrf_token %}
+            <input type="text" name="message" placeholder="Type your message..." required autocomplete="off">
+            <button type="submit">Send</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Prevent browser back button after logout
+    history.pushState(null, null, location.href);
+    window.onpopstate = function () {
+        history.go(1);
+    };
+
+    // Auto-scroll to bottom of chat
+    const chatBox = document.getElementById('chatBox');
+    chatBox.scrollTop = chatBox.scrollHeight;
+
+    function logout() {
+        window.location.href = "{% url 'chatbot:logout' %}";
+    }
+
+    function clearChat() {
+        if (confirm("Are you sure you want to clear all chats? This action cannot be undone.")) {
+            window.location.href = "{% url 'chatbot:clear_chat' %}";
+        }
+    }
+</script>
+
+</body>
+</html>
+

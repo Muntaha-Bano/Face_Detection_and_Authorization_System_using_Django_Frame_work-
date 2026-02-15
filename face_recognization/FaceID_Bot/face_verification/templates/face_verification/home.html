@@ -1,0 +1,20 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Face ID Bot</title>
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
+</head>
+<body>
+
+<div class="home-container">
+    <div class="button-row">
+        <a href="{% url 'signup' %}" class="start-btn">SIGN IN</a>
+        <a href="{% url 'login' %}" class="login-btn">LOGIN</a>
+        
+    </div>
+</div>
+
+</body>
+</html>
